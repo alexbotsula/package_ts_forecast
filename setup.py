@@ -8,7 +8,6 @@ setup(
     author_email='abotsula@gmail.com',
     packages=['ts_forecast'],
     install_requires=['pandas', 'numpy', 'math', 'sklearn'],
-    version='0.1',
     license='MIT',
     description='Package includes utility classes and function for time series transformations and forecasting'
 )
