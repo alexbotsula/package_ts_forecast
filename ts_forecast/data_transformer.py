@@ -31,7 +31,7 @@ class DataTransformer:
 
 
     def __lagged_vars_x(self, df):
-        x_data = pd.DataFrame()
+        x_data = pd.DataFrame(index=df.index)
         x_data[self._x_variables] = df[self._x_variables]
 
         for var in self._x_variables:
@@ -74,7 +74,8 @@ class DataTransformer:
         Args:
             df (DataFrame):     raw data used in the modelling
         '''
-        _X = self._X_normalizer.transform(self.__lagged_vars_x(df))
+        _X = self.__lagged_vars_x(df)
+        _X = pd.DataFrame(self._X_normalizer.transform(_X), columns=_X.columns, index=_X.index)
         _Y = self.__return_var_y(df)
 
         return _X, _Y
