@@ -60,7 +60,7 @@ class DataTransformer:
 
         # Normalise X values
         self._X_normalizer = Normalizer().fit(_X)
-        self._X = self._X_normalizer.transform(_X)
+        self._X = pd.DataFrame(self._X_normalizer.transform(_X), columns=_X.columns, index=_X.index)
 
         self._Y = self.__return_var_y(df)
 
