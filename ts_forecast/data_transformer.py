@@ -6,7 +6,7 @@ from sklearn.preprocessing import Normalizer
 
 
 class DataTransformer:
-    def __init__(self, forecast_horizon, history_used, x_variables, y_variable, lower_threshold, upper_threshold):
+    def __init__(self, forecast_horizon, history_used, x_variables, y_variable, lower_threshold=None, upper_threshold=None):
         '''
         Initialise data transformation parameters:
         
@@ -15,7 +15,8 @@ class DataTransformer:
             history_used (int):         defines the historic period considered for the forecast
             x_variables (list):         defines the variables used in the forecast, i.e. OHLCV
             y_variable: (string):       name of the variable used for the dependent varianle in the forecast, i.e. 'O'
-            lower_threshold, upper_threshold (float): defines the event predicted by the forecast, i.e. -5% return over the forecast horizon; Used in the          classification version of the forecast
+            lower_threshold, upper_threshold (float): defines the event predicted by the forecast, i.e. -5% return over the forecast horizon; 
+                Used in the classification version of the forecast. Regression type of data is assumed if None
         '''
 
         self._X = pd.DataFrame()
@@ -43,7 +44,9 @@ class DataTransformer:
 
     def __return_var_y(self, df):
         ret = (df[[self._y_variable]].shift(-self._forecast_horizon) / df[[self._y_variable]] - 1.).values.flatten()
-        y_data = pd.cut(ret, [-math.inf, self._lower_threshold, self._upper_threshold, math.inf], labels=[-1, 0, 1])
+
+        if self._lower_threshold is not None and self._upper_threshold is not None:
+            y_data = pd.cut(ret, [-math.inf, self._lower_threshold, self._upper_threshold, math.inf], labels=[-1, 0, 1])
         
         return y_data[self._history_used:-self._forecast_horizon]
 
