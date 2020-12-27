@@ -46,7 +46,7 @@ class DataTransformer:
         ret = (df[[self._y_variable]].shift(-self._forecast_horizon) / df[[self._y_variable]] - 1.).values.flatten()
 
         if self._lower_threshold is not None and self._upper_threshold is not None:
-            y_data = pd.cut(ret, [-math.inf, self._lower_threshold, self._upper_threshold, math.inf], labels=[-1, 0, 1])
+            ret = pd.cut(ret, [-math.inf, self._lower_threshold, self._upper_threshold, math.inf], labels=[-1, 0, 1])
         
         return y_data[self._history_used:-self._forecast_horizon]
 
@@ -83,3 +83,13 @@ class DataTransformer:
 
         return _X, _Y
         
+
+def transform_date_ccxt(date_col):
+    '''
+    Transforms date from ccxt format into datetime
+
+    Args:
+        date_col:   column of dates as produced by ccxt lib
+    '''
+
+    return [datetime.fromtimestamp(x/1000) for x in date_col]
