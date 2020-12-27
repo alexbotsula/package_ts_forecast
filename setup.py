@@ -6,7 +6,7 @@ setup(
     author='Alex Botsula',
     author_email='abotsula@gmail.com',
     packages=['ts_forecast'],
-    install_requires=['pandas', 'numpy', 'sklearn'],
+    install_requires=['pandas', 'numpy', 'sklearn', 'datetime'],
     license='MIT',
     description='Package includes utility classes and function for time series transformations and forecasting'
 )
