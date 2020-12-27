@@ -48,7 +48,7 @@ class DataTransformer:
         if self._lower_threshold is not None and self._upper_threshold is not None:
             ret = pd.cut(ret, [-math.inf, self._lower_threshold, self._upper_threshold, math.inf], labels=[-1, 0, 1])
         
-        return y_data[self._history_used:-self._forecast_horizon]
+        return ret[self._history_used:-self._forecast_horizon]
 
 
     def init_data(self, df):
