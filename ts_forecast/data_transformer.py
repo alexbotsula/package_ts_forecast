@@ -3,10 +3,10 @@ import numpy as np
 from datetime import datetime
 import math
 from sklearn.preprocessing import Normalizer
-from abc import abstractmethod
+from abc import ABC, abstractmethod
 
 
-class DataTransformerBase:
+class DataTransformerBase(ABC):
     def __init__(self, forecast_horizon, history_used, x_variables, y_variable, lower_threshold=None, upper_threshold=None):
         '''
         Initialise data transformation parameters:
