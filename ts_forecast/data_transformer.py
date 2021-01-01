@@ -5,8 +5,8 @@ import math
 from sklearn.preprocessing import Normalizer
 
 
-class DataTransformer:
-    def __init__(self, forecast_horizon, history_used, x_variables, y_variable, lower_threshold=None, upper_threshold=None):
+class DataTransformerBase:
+    def __init__(forecast_horizon, history_used, x_variables, y_variable, lower_threshold=None, upper_threshold=None):
         '''
         Initialise data transformation parameters:
         
@@ -18,9 +18,6 @@ class DataTransformer:
             lower_threshold, upper_threshold (float): defines the event predicted by the forecast, i.e. -5% return over the forecast horizon; 
                 Used in the classification version of the forecast. Regression type of data is assumed if None
         '''
-
-        self._X = pd.DataFrame()
-        self._Y = pd.DataFrame()
         self._X_normalizer = None
 
         self._forecast_horizon = forecast_horizon
@@ -30,6 +27,59 @@ class DataTransformer:
         self._lower_threshold = lower_threshold
         self._upper_threshold = upper_threshold
 
+
+    def __lagged_vars_x(self, df):
+        pass
+
+
+    def __return_var_y(self, df):
+        ret = (df[[self._y_variable]].shift(-self._forecast_horizon) / df[[self._y_variable]] - 1.).values.flatten()
+
+        if self._lower_threshold is not None and self._upper_threshold is not None:
+            ret = pd.cut(ret, [-math.inf, self._lower_threshold, self._upper_threshold, math.inf], labels=[-1, 0, 1])
+        
+        return ret[self._history_used:-self._forecast_horizon]
+
+
+    def transform_data(self, df):
+        '''
+        Create predictive variables according to the parameters:
+        
+        Args:
+            df (DataFrame):     raw data used in the modelling
+        '''
+        
+        # Normalise X values
+        df_x = pd.DataFrame(self._X_normalizer.transform(df[self._x_variables]), columns=self._x_variables, index=df.index)
+        
+        _X = self.__lagged_vars_x(df_x)
+        _Y = self.__return_var_y(df)
+
+        return _X, _Y 
+
+
+    def init_data(self, df):
+        '''
+        Initialise normalizer and create predictive variables according to the parameters:
+        
+        Args:
+            df (DataFrame):     raw data used in the modelling
+        '''
+
+        # Init normalizer
+        self._X_normalizer = Normalizer.fit(df[self._x_variables])
+
+        return self.transform_data(df)
+
+    
+
+class DataTransformer1D(DataTransformerBase):
+    '''
+    Simple data transformer class, producing a 2D table (DataFrame) with lagged variables (1D array per time point)
+    '''
+
+    def __init__(self, forecast_horizon, history_used, x_variables, y_variable, lower_threshold=None, upper_threshold=None):
+        DataTransformerBase.__init__(self, forecast_horizon, history_used, x_variables, y_variable, lower_threshold, upper_threshold)
 
     def __lagged_vars_x(self, df):
         x_data = pd.DataFrame(index=df.index)
@@ -42,46 +92,7 @@ class DataTransformer:
 
         return x_data.iloc[self._history_used:-self._forecast_horizon]
 
-    def __return_var_y(self, df):
-        ret = (df[[self._y_variable]].shift(-self._forecast_horizon) / df[[self._y_variable]] - 1.).values.flatten()
 
-        if self._lower_threshold is not None and self._upper_threshold is not None:
-            ret = pd.cut(ret, [-math.inf, self._lower_threshold, self._upper_threshold, math.inf], labels=[-1, 0, 1])
-        
-        return ret[self._history_used:-self._forecast_horizon]
-
-
-    def init_data(self, df):
-        '''
-        Initialise model data and create predictive variables according to the parameters:
-        
-        Args:
-            df (DataFrame):     raw data used in the modelling
-        '''
-        
-        _X = self.__lagged_vars_x(df)
-
-        # Normalise X values
-        self._X_normalizer = Normalizer().fit(_X)
-        self._X = pd.DataFrame(self._X_normalizer.transform(_X), columns=_X.columns, index=_X.index) 
-
-        self._Y = self.__return_var_y(df)
-
-        return _X, self._Y 
-
-
-    def transform_data(self, df):
-        '''
-        Create predictive variables according to the parameters:
-        
-        Args:
-            df (DataFrame):     raw data used in the modelling
-        '''
-        _X = self.__lagged_vars_x(df)
-        _X = pd.DataFrame(self._X_normalizer.transform(_X), columns=_X.columns, index=_X.index)
-        _Y = self.__return_var_y(df)
-
-        return _X, _Y
         
 
 def transform_date_ccxt(date_col):
