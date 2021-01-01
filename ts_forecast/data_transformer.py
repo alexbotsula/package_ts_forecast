@@ -79,7 +79,7 @@ class DataTransformer1D(DataTransformerBase):
     '''
 
     def __init__(self, forecast_horizon, history_used, x_variables, y_variable, lower_threshold=None, upper_threshold=None):
-        DataTransformerBase.__init__(self, forecast_horizon, history_used, x_variables, y_variable, lower_threshold, upper_threshold)
+        DataTransformerBase.__init__(forecast_horizon, history_used, x_variables, y_variable, lower_threshold, upper_threshold)
 
     def __lagged_vars_x(self, df):
         x_data = pd.DataFrame(index=df.index)
