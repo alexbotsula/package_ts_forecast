@@ -30,11 +30,11 @@ class DataTransformerBase:
 
 
     @abstractmethod
-    def __lagged_vars_x(self, df):
+    def _lagged_vars_x(self, df):
         pass
 
 
-    def __return_var_y(self, df):
+    def _return_var_y(self, df):
         ret = (df[[self._y_variable]].shift(-self._forecast_horizon) / df[[self._y_variable]] - 1.).values.flatten()
 
         if self._lower_threshold is not None and self._upper_threshold is not None:
@@ -54,8 +54,8 @@ class DataTransformerBase:
         # Normalise X values
         df_x = pd.DataFrame(self._X_normalizer.transform(df[self._x_variables]), columns=self._x_variables, index=df.index)
 
-        _X = self.__lagged_vars_x(df_x)
-        _Y = self.__return_var_y(df)
+        _X = self._lagged_vars_x(df_x)
+        _Y = self._return_var_y(df)
 
         return _X, _Y 
 
@@ -84,16 +84,16 @@ class DataTransformer1D(DataTransformerBase):
         super().__init__(forecast_horizon, history_used, x_variables, y_variable, lower_threshold, upper_threshold)
 
 
-    # def __lagged_vars_x(self, df):
-    #     x_data = pd.DataFrame(index=df.index)
-    #     x_data[self._x_variables] = df[self._x_variables]
+    def _lagged_vars_x(self, df):
+        x_data = pd.DataFrame(index=df.index)
+        x_data[self._x_variables] = df[self._x_variables]
 
-    #     for var in self._x_variables:
-    #         varnames = ['{}_{}'.format(var, i) for i in range(1, self._history_used)]
-    #         x_data[varnames] = pd.DataFrame(dict((varnames[i-1], 
-    #             df[[var]].shift(i).values.flatten()) for i in range(1, self._history_used)), index=df.index)
+        for var in self._x_variables:
+            varnames = ['{}_{}'.format(var, i) for i in range(1, self._history_used)]
+            x_data[varnames] = pd.DataFrame(dict((varnames[i-1], 
+                df[[var]].shift(i).values.flatten()) for i in range(1, self._history_used)), index=df.index)
 
-    #     return x_data.iloc[self._history_used:-self._forecast_horizon]
+        return x_data.iloc[self._history_used:-self._forecast_horizon]
 
 
         
