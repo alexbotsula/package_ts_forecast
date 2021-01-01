@@ -6,7 +6,7 @@ from sklearn.preprocessing import Normalizer
 
 
 class DataTransformerBase:
-    def __init__(forecast_horizon, history_used, x_variables, y_variable, lower_threshold=None, upper_threshold=None):
+    def __init__(self, forecast_horizon, history_used, x_variables, y_variable, lower_threshold=None, upper_threshold=None):
         '''
         Initialise data transformation parameters:
         
