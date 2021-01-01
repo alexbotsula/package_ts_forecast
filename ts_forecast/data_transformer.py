@@ -52,7 +52,8 @@ class DataTransformerBase:
         
         # Normalise X values
         df_x = pd.DataFrame(self._X_normalizer.transform(df[self._x_variables]), columns=self._x_variables, index=df.index)
-        
+        print(df_x)
+
         _X = self.__lagged_vars_x(df_x)
         _Y = self.__return_var_y(df)
 
