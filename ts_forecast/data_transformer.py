@@ -3,6 +3,7 @@ import numpy as np
 from datetime import datetime
 import math
 from sklearn.preprocessing import Normalizer
+import abc
 
 
 class DataTransformerBase:
@@ -29,7 +30,7 @@ class DataTransformerBase:
 
 
     def __lagged_vars_x(self, df):
-        pass
+        raise NotImplementedError('Please Implement this method')
 
 
     def __return_var_y(self, df):
