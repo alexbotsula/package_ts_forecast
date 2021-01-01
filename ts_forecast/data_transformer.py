@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 from datetime import datetime
 import math
-from sklearn.preprocessing import Normalizer
+from sklearn.preprocessing import StandardScaler
 from abc import ABC, abstractmethod
 
 
@@ -69,7 +69,7 @@ class DataTransformerBase(ABC):
         '''
 
         # Init normalizer
-        self._X_normalizer = Normalizer().fit(df[self._x_variables])
+        self._X_normalizer = StandardScaler().fit(df[self._x_variables])
 
         return self.transform_data(df)
 
