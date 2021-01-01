@@ -3,7 +3,7 @@ import numpy as np
 from datetime import datetime
 import math
 from sklearn.preprocessing import Normalizer
-import abc
+from abc import abstractmethod
 
 
 class DataTransformerBase:
@@ -29,8 +29,9 @@ class DataTransformerBase:
         self._upper_threshold = upper_threshold
 
 
+    @abstractmethod
     def __lagged_vars_x(self, df):
-        raise NotImplementedError('Please Implement this method')
+        pass
 
 
     def __return_var_y(self, df):
