@@ -44,9 +44,9 @@ def time_series_cv(df, data_transformer, n_fold, n_epochs, model_func):
 '''
 Plot performance history data
 '''
-def plot_perf_history(perf_history):
+def plot_perf_history(perf_history, n_trim):
     def plot_perf(hist, label):
-        mean_perf = [np.mean([x[i] for x in hist]) for i in range(len(hist[0]))]
+        mean_perf = [np.mean([x[i] for x in hist]) for i in range(len(hist[0]))][n_trim:]
 
         plt.plot(range(1, len(mean_perf) + 1), mean_perf)
         plt.xlabel('Epochs')
