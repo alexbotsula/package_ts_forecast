@@ -131,6 +131,10 @@ class DataTransformer3D(DataTransformerBase):
 
 
     def _lagged_vars_x(self, df):
+        '''
+        Args:
+            df: must be indexed by time!
+        '''
         # Pre-allocate an array containing the values
         n_obs = len(df[df.symb == self._y_asset].index)
         val_array = np.zeros((n_obs, len(self._x_variables), self._forecast_horizon+1, len(self._x_assets)))
