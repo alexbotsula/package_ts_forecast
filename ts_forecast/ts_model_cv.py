@@ -8,7 +8,7 @@ Time series walk-forward cross-validation of a model
 def time_series_cv(df, data_transformer, n_fold, n_epochs, model_func):
     '''
     Args:
-        df (DataFrame):         data frame with the source data
+        df (DataFrame):         data frame with the source data (must have time as index!)
         data_transformer (DataTransformBase): object defining the data transformation
         n_fold (int):           number of w/f CV splits
         n_epochs (int):         number of epochs per CV step
@@ -21,7 +21,7 @@ def time_series_cv(df, data_transformer, n_fold, n_epochs, model_func):
     # Utility function to grow historic performance dictionary
     list_append = lambda lst, item: lst + [item] if lst else [item]
 
-    unique_ind = data_raw_btc.index.unique()
+    unique_ind = df.index.unique()
     for train_index, test_index in tscv.split(unique_ind):
         print("TRAIN:", train_index, "TEST:", test_index)
         df_train, df_test = df.loc[unique_ind[train_index]], df.loc[unique_ind[test_index]]
