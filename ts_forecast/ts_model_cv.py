@@ -55,5 +55,5 @@ def plot_perf_history(perf_history):
 
     for k in perf_history:
         plt.figure()
-        plot_perf(perf_hist[k], k)
+        plot_perf(perf_history[k], k)
         plt.show()
