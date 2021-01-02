@@ -75,7 +75,7 @@ class DataTransformerBase(ABC):
         '''
 
         # Init normalizer
-        self._X_normalizer = Normalizer().fit(df[self._x_variables])
+        self._X_normalizer = StandardScaler().fit(df[self._x_variables])
 
         return self.transform_data(df)
 
