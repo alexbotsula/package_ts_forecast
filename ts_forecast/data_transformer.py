@@ -59,11 +59,13 @@ class DataTransformer:
             df (DataFrame):     raw data used in the modelling
         '''
         
-        _X = self.__lagged_vars_x(df)
+        df_x = df.copy()
+        self._X_normalizer = StandardScaler().fit(df[self._x_variables])
+        df_x[self._x_variables] = pd.DataFrame(self._X_normalizer.transform(df[self._x_variables]), columns=self._x_variables, index=df.index)
+        _X = self.__lagged_vars_x(df_x)
 
         # Normalise X values
-        self._X_normalizer = Normalizer().fit(_X)
-        self._X = pd.DataFrame(self._X_normalizer.transform(_X), columns=_X.columns, index=_X.index) 
+        self._X = pd.DataFrame(_X, columns=_X.columns, index=_X.index) 
 
         self._Y = self.__return_var_y(df)
 
@@ -77,8 +79,11 @@ class DataTransformer:
         Args:
             df (DataFrame):     raw data used in the modelling
         '''
+        df_x = df.copy()
+        df_x[self._x_variables] = pd.DataFrame(self._X_normalizer.transform(df[self._x_variables]), columns=self._x_variables, index=df.index)
+        
         _X = self.__lagged_vars_x(df)
-        _X = pd.DataFrame(self._X_normalizer.transform(_X), columns=_X.columns, index=_X.index)
+        _X = pd.DataFrame(_X, columns=_X.columns, index=_X.index)
         _Y = self.__return_var_y(df)
 
         return _X, _Y
