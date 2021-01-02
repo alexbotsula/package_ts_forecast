@@ -53,7 +53,7 @@ def plot_perf_history(perf_history):
         plt.ylabel(label)
         plt.show()
 
-    for k in perf_hist:
+    for k in perf_history:
         plt.figure()
         plot_perf(perf_hist[k], k)
         plt.show()
