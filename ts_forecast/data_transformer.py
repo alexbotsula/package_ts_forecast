@@ -60,7 +60,7 @@ class DataTransformer:
         '''
         
         df_x = df.copy()
-        self._X_normalizer = StandardScaler().fit(df[self._x_variables])
+        self._X_normalizer = Normalizer().fit(df[self._x_variables])
         df_x[self._x_variables] = pd.DataFrame(self._X_normalizer.transform(df[self._x_variables]), columns=self._x_variables, index=df.index)
         _X = self.__lagged_vars_x(df_x)
 
