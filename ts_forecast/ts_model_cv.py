@@ -15,7 +15,7 @@ def time_series_cv(df, data_transformer, n_fold, n_epochs, batch_size, model_fun
         model_func (function):  function to construct a model
     '''
     
-    tscv = TimeSeriesSplit(n_splits=n_fold, gap=60, max_train_size=len(df)/n_fold)
+    tscv = TimeSeriesSplit(n_splits=n_fold, max_train_size=len(df)/n_fold)
     
     perf_hist = None
     # Utility function to grow historic performance dictionary
