@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 '''
 Time series walk-forward cross-validation of a model
 '''
-def time_series_cv(df, data_transformer, n_fold, n_epochs, model_func):
+def time_series_cv(df, data_transformer, n_fold, n_epochs, batch_size, model_func):
     '''
     Args:
         df (DataFrame):         data frame with the source data (must have time as index!)
@@ -15,7 +15,7 @@ def time_series_cv(df, data_transformer, n_fold, n_epochs, model_func):
         model_func (function):  function to construct a model
     '''
     
-    tscv = TimeSeriesSplit(n_splits=n_fold)
+    tscv = TimeSeriesSplit(n_splits=n_fold, gap=60, max_train_size=len(df)/n_fold)
     
     perf_hist = None
     # Utility function to grow historic performance dictionary
@@ -32,7 +32,7 @@ def time_series_cv(df, data_transformer, n_fold, n_epochs, model_func):
         m = model_func(X_train)
         hist = m.fit(X_train, y_train,
                     validation_data=(X_val, y_val), 
-                    batch_size=4096, epochs=n_epochs, verbose=0)
+                    batch_size=batch_size, epochs=n_epochs, verbose=0)
         
         if not perf_hist:
             perf_hist = dict((k, []) for k in hist.history)
