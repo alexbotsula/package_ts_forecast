@@ -23,8 +23,6 @@ def time_series_cv(df, data_transformer, n_fold, n_epochs, batch_size, model_fun
         n_epochs (int):         number of epochs per CV step
         model_func (function):  function to construct a model
     '''
-
-
     
     tscv = TimeSeriesSplit(n_splits=n_fold)
     
