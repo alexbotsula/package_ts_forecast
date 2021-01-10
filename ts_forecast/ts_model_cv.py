@@ -53,7 +53,7 @@ def time_series_cv(df, data_transformer, n_fold, n_epochs, batch_size, model_fun
     
         # Add train performance metrics in the end of the CV cycle
         if not is_last:
-            perf_hist = dict((key, list_append(perf_hist[key], hist.history[key] if key in val_metrics else [])) for key in hist.history)
+            perf_hist = dict((key, list_append(perf_hist[key], hist.history[key]) if key in val_metrics else []) for key in hist.history)
         else: 
             perf_hist = dict((key, list_append(perf_hist[key], hist.history[key])) for key in hist.history)
 
