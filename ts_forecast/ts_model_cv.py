@@ -3,7 +3,7 @@ from sklearn.model_selection import TimeSeriesSplit
 import matplotlib.pyplot as plt
 from typing import Iterable, Any, Tuple
 
-def _signal_last(it:Iterable[Any]) -> Iterable[Tuple[bool, Any]]:
+def _signal_last(it):
     iterable = iter(it)
     ret_var = next(iterable)
     for val in iterable:
