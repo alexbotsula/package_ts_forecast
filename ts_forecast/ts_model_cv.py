@@ -30,7 +30,6 @@ def time_series_cv(df, data_transformer, n_fold, n_epochs, batch_size, model_fun
     # Utility function to grow historic performance dictionary
     list_append = lambda lst, item: lst + [item] if lst else [item]
 
-    last_val_ind = None
 
     unique_ind = df.index.unique()
     for is_last, (train_index, test_index) in _signal_last(tscv.split(unique_ind)):
@@ -54,7 +53,7 @@ def time_series_cv(df, data_transformer, n_fold, n_epochs, batch_size, model_fun
     
         # Add train performance metrics in the end of the CV cycle
         if not is_last:
-            perf_hist = dict((key, list_append(perf_hist[key], hist.history[key])) for key in hist.history if key in val_metrics)
+            perf_hist = dict((key, list_append(perf_hist[key], hist.history[key] if key in val_metrics else [])) for key in hist.history)
         else: 
             perf_hist = dict((key, list_append(perf_hist[key], hist.history[key])) for key in hist.history)
 
