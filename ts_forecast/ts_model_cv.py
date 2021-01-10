@@ -45,8 +45,8 @@ def time_series_cv(df, data_transformer, n_fold, n_epochs, batch_size, model_fun
                     validation_data=(X_val, y_val), 
                     batch_size=batch_size, epochs=n_epochs, verbose=0)
         
-        train_metrics = [k for k in hist.history if not k.endswith('_val')]
-        val_metrics = [k + '_val' for k in train_metrics] 
+        train_metrics = [k for k in hist.history if not k.beginswith('val_')]
+        val_metrics = ['val_' + k for k in train_metrics] 
 
         # Only validation metrics are added during the cross validation to avoid double counting of the impact for expanding training set
         if not perf_hist:
