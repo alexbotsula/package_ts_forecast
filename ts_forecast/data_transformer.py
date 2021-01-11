@@ -113,16 +113,18 @@ class DataTransformer3D(DataTransformerBase):
         Features (OCHLV)
         Lags (0..forecast_horizon)
         Assets (BTC, ETH, ...)
-    '''
+    ''' 
 
-    def __init__(self, forecast_horizon, history_used, x_variables, y_variable, x_assets, y_asset, lower_threshold=None, upper_threshold=None):
+    def __init__(self, forecast_horizon, history_used, x_variables, y_variable, x_assets, y_asset, flatten_x=False, lower_threshold=None, upper_threshold=None):
         '''
         Args (additional to base class):
             x_assets (list):    list of assets used as an input
             y_asset (string):   asset whose y_variable to be used for dependent variable 
+            flatten_x (bool):   flag whether to flatten X before output
         '''
         self._x_assets = x_assets
         self._y_asset = y_asset
+        self._flatten_x = flatten_x
         super().__init__(forecast_horizon, history_used, x_variables, y_variable, lower_threshold, upper_threshold)
 
 
@@ -143,8 +145,11 @@ class DataTransformer3D(DataTransformerBase):
             for i_a, a in enumerate(self._x_assets):
                 for lag in range(self._history_used+1):
                     val_array[:, i_f, lag, i_a] = df[df.symb == a][f].shift(lag)  
-
-        return val_array[self._history_used:-self._forecast_horizon,]  
+        
+        if self._flatten_x:
+            return val_array[self._history_used:-self._forecast_horizon,].flatten()
+        else:
+            return val_array[self._history_used:-self._forecast_horizon,]
 
 
 def transform_date_ccxt(date_col):
