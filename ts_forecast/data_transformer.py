@@ -141,7 +141,7 @@ class DataTransformer3D(DataTransformerBase):
 
         for i_f, f in enumerate(self._x_variables):
             for i_a, a in enumerate(self._x_assets):
-                for lag in range(self._forecast_horizon+1):
+                for lag in range(self._history_used+1):
                     val_array[:, i_f, lag, i_a] = df[df.symb == a][f].shift(lag)  
 
         return val_array[self._history_used:-self._forecast_horizon,]  
