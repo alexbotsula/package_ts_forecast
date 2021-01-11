@@ -147,7 +147,7 @@ class DataTransformer3D(DataTransformerBase):
                     val_array[:, i_f, lag, i_a] = df[df.symb == a][f].shift(lag)  
         
         if self._flatten_x:
-            return val_array[self._history_used:-self._forecast_horizon,].flatten()
+            return val_array[self._history_used:-self._forecast_horizon,].reshape(n_obs, -1)
         else:
             return val_array[self._history_used:-self._forecast_horizon,]
 
