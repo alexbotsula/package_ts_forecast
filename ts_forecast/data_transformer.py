@@ -137,7 +137,7 @@ class DataTransformer3D(DataTransformerBase):
         '''
         # Pre-allocate an array containing the values
         n_obs = len(df[df.symb == self._y_asset].index)
-        val_array = np.zeros((n_obs, len(self._x_variables), self._forecast_horizon+1, len(self._x_assets)))
+        val_array = np.zeros((n_obs, len(self._x_variables), self._history_used+1, len(self._x_assets)))
 
         for i_f, f in enumerate(self._x_variables):
             for i_a, a in enumerate(self._x_assets):
