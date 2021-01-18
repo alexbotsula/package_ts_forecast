@@ -149,7 +149,7 @@ class DataTransformer3D(DataTransformerBase):
         if self._flatten_x:
             return val_array[self._history_used:-self._forecast_horizon,].reshape(-1, len(self._x_variables)*(self._history_used+1)*len(self._x_assets))
         else:
-            return val_array[self._history_used:-self._forecast_horizon,]
+            return np.expand_dims(val_array[self._history_used:-self._forecast_horizon,], axis=-1)
 
 
 def transform_date_ccxt(date_col):
