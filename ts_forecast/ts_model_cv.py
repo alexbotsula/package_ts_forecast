@@ -11,9 +11,10 @@ def _signal_last(it):
         ret_var = val
     yield True, ret_var
 
-'''
-Time series walk-forward cross-validation of a model
-'''
+
+
+# Time series walk-forward cross-validation of a model
+
 def time_series_cv(df, data_transformer, n_fold, n_epochs, batch_size, model_func):
     '''
     Args:
@@ -42,16 +43,15 @@ def time_series_cv(df, data_transformer, n_fold, n_epochs, batch_size, model_fun
         m = model_func(X_train)
         hist = m.fit(X_train, y_train,
                     validation_data=(X_val, y_val), 
-                    batch_size=batch_size, epochs=n_epochs, verbose=0)
+                    batch_size=batch_size, epochs=n_epochs, verbose=True)
         
         train_metrics = [k for k in hist.history if not k.startswith('val_')]
         val_metrics = ['val_' + k for k in train_metrics] 
 
-        # Only validation metrics are added during the cross validation to avoid double counting of the impact for expanding training set
         if not perf_hist:
             perf_hist = dict((k, []) for k in hist.history)
 
-
+        # Only validation metrics are added during the cross validation to avoid double counting of the impact for expanding training set
         # Add train performance metrics in the end of the CV cycle
         # if not is_last:
         #     perf_hist = dict((key, list_append(perf_hist[key], hist.history[key]) if key in val_metrics else []) for key in hist.history)
@@ -63,9 +63,9 @@ def time_series_cv(df, data_transformer, n_fold, n_epochs, batch_size, model_fun
     return perf_hist
 
 
-'''
-Plot performance history data
-'''
+
+#Plot performance history data
+
 def plot_perf_history(perf_history, n_trim):
     def plot_perf(hist, label):
         mean_perf = [np.mean([x[i] for x in hist]) for i in range(len(hist[0]))][n_trim:]
