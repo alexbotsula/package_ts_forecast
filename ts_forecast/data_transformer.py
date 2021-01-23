@@ -39,6 +39,16 @@ class DataTransformerBase(ABC):
         pass
 
 
+    @abstractmethod
+    def _normalize_X(self, df):
+        pass
+
+
+    @abstractmethod
+    def _init_normalizer(self, df):
+        pass
+
+
     def _asset_return(self, df):
         ret = (df[[self._y_variable]].shift(-self._forecast_horizon) / df[[self._y_variable]] - 1.).values.flatten()
 
@@ -58,7 +68,7 @@ class DataTransformerBase(ABC):
         
         df_x = df.copy()
         # Normalise X values
-        df_x[self._x_variables] = pd.DataFrame(self._X_normalizer.transform(df[self._x_variables]), columns=self._x_variables, index=df.index)
+        df_x[self._x_variables] = pd.DataFrame(self._normalize_X(df), columns=self._x_variables, index=df.index)
 
         _X = self._lagged_vars_x(df_x)
         _Y = self._return_var_y(df)
@@ -74,8 +84,8 @@ class DataTransformerBase(ABC):
             df (DataFrame):     raw data used in the modelling
         '''
 
-        # Init normalizer
-        self._X_normalizer = StandardScaler().fit(df[self._x_variables])
+        # Init normalizer 
+        self._X_normalizer = self._init_normalizer(df) 
 
         return self.transform_data(df)
 
@@ -92,6 +102,14 @@ class DataTransformer1D(DataTransformerBase):
 
     def _return_var_y(self, df):
         return self._asset_return(df)
+
+
+    def _normalize_X(self, df):
+        return self._X_normalizer.transform(df[self._x_variables])
+
+
+    def _init_normalizer(self, df):
+        return StandardScaler().fit(df[self._x_variables])
 
 
     def _lagged_vars_x(self, df):
@@ -130,6 +148,19 @@ class DataTransformer3D(DataTransformerBase):
 
     def _return_var_y(self, df):
             return self._asset_return(df[df.symb == self._y_asset])
+
+ 
+    def _normalize_X(self, df):
+        df_ = df.copy()
+        
+        for a in self._x_assets:
+            df_.loc[df.symb == a, self._x_variables] = self._X_normalizer[a].transform(df_[df.symb == a][self._x_variables])
+
+        return df_
+
+
+    def _init_normalizer(self, df):
+        return dict((a, StandardScaler().fit(df[df.symb == a][self._x_variables])) for a in self._x_assets)
 
 
     def _lagged_vars_x(self, df):
