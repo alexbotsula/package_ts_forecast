@@ -44,7 +44,6 @@ class FractDiffTransformer:
 
         for d in np.linspace(0, 1, 11):
             ts_d = self._ts_diff(series, d)
-            print([d, len(ts_d), len(series)])
             df = adfuller(ts_d, maxlag=1, regression='c', autolag=None)
             if df[1] < self._adf_p_thres:
                 break
