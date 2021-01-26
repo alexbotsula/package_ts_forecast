@@ -26,16 +26,17 @@ def time_series_cv(df, data_transformer, n_fold, n_epochs, batch_size, model_fun
     '''
     
     tscv = TimeSeriesSplit(n_splits=n_fold)
+    df_ = df.copy()
     
     perf_hist = None
     # Utility function to grow historic performance dictionary
     list_append = lambda lst, item: lst + [item] if lst else [item]
 
-    df.set_index('t', inplace=True)
-    unique_ind = df.index.unique()
+    df_.set_index('t', inplace=True)
+    unique_ind = df_.index.unique()
     for is_last, (train_index, test_index) in _signal_last(tscv.split(unique_ind)):
         print("TRAIN:", train_index, "TEST:", test_index)
-        df_train, df_test = df.loc[unique_ind[train_index]], df.loc[unique_ind[test_index]]
+        df_train, df_test = df_.loc[unique_ind[train_index]], df_.loc[unique_ind[test_index]]
         
         df_train.reset_index(inplace=True)
         df_test.reset_index(inplace=True)
