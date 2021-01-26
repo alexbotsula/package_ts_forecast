@@ -99,7 +99,8 @@ class DataTransformer3D:
             df: must be indexed by time!
         '''
         # Pre-allocate an array containing the values
-        n_obs = len(df[df.symb == self._y_asset].index)
+        n_obs = len(df[df.symb == self._x_assets[0]])
+
         val_array = np.zeros((n_obs, len(self._x_variables), self._history_used+1, len(self._x_assets)))
 
         for i_f, f in enumerate(self._x_variables):
