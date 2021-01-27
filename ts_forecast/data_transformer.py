@@ -4,6 +4,7 @@ from datetime import datetime
 import math
 from sklearn.preprocessing import StandardScaler, Normalizer
 from abc import ABC, abstractmethod
+from keras.utils import to_categorical
 
 from .fractional_differencing import FractDiffTransformer
 
@@ -55,7 +56,8 @@ class DataTransformer3D:
         ret = (df[[self._y_variable]].shift(-self._forecast_horizon) / df[[self._y_variable]] - 1.).values.flatten()
 
         if self._lower_threshold is not None and self._upper_threshold is not None:
-            ret = pd.cut(ret, [-math.inf, self._lower_threshold, self._upper_threshold, math.inf], labels=[-1, 0, 1])        
+            ret = pd.cut(ret, [-math.inf, self._lower_threshold, self._upper_threshold, math.inf], labels=[0, 1, 2])
+            ret = to_categorical(ret)        
 
         return ret[self._lag_cutoff:][self._history_used:-self._forecast_horizon]
 
