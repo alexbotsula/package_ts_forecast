@@ -53,13 +53,18 @@ class DataTransformer3D:
         
     
     def _asset_return(self, df):
-        ret = (df[[self._y_variable]].shift(-self._forecast_horizon) / df[[self._y_variable]] - 1.).values.flatten()
+
+        trunc_ret = lambda x: x[self._lag_cutoff:][self._history_used:-self._forecast_horizon]
+
+        ret = trunc_ret((df[[self._y_variable]].shift(-self._forecast_horizon) / df[[self._y_variable]] - 1.).values.flatten())
 
         if self._lower_threshold is not None and self._upper_threshold is not None:
-            ret_ = pd.cut(ret, [-math.inf, self._lower_threshold, self._upper_threshold, math.inf], labels=[0, 1, 2])[0:]
-            ret = to_categorical(ret_)        
+            ret = pd.cut(ret, [-math.inf, self._lower_threshold, self._upper_threshold, math.inf], labels=[0, 1, 2])    
+            ret = to_categorical(ret)
 
-        return ret[self._lag_cutoff:][self._history_used:-self._forecast_horizon]
+        return ret
+
+
 
 
     def _return_var_y(self, df): 
