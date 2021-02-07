@@ -45,7 +45,7 @@ def time_series_cv(df, data_transformer, n_fold, n_epochs, batch_size, model_fun
 
         m = model_func(X_train)
         hist = m.fit(X_train, y_train,
-                    validation_data=(X_val, y_val), shuffle=False,
+                    validation_data=(X_val, y_val), shuffle=True,
                     batch_size=batch_size, epochs=n_epochs, verbose=False)
         
         train_metrics = [k for k in hist.history if not k.startswith('val_')]
