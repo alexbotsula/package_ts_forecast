@@ -91,7 +91,7 @@ class DataTransformer3D:
 
             ret = [event_type(x) for x in zip(rise_index, fall_index)]
             ret = ret[self._lag_cutoff:][self._history_used:]
-            # ret = to_categorical(ret)
+            ret = to_categorical(ret)
 
         return ret
 
