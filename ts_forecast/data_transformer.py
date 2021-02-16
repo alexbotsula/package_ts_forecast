@@ -54,13 +54,44 @@ class DataTransformer3D:
     
     def _asset_return(self, df):
 
-        trunc_ret = lambda x: x[self._lag_cutoff:][self._history_used:-self._forecast_horizon]
+        def event_type(x):
+            rise = x[0][0]
+            fall = x[1][0]
 
-        ret = trunc_ret((df[[self._y_variable]].shift(-self._forecast_horizon) / df[[self._y_variable]] - 1.).values.flatten())
+            if rise.size > 0 and fall.size == 0:
+                return 2
+            elif fall.size > 0 and rise.size == 0:
+                return 0
+            elif fall.size == 0 and rise.size == 0:
+                return 1
+            
+            return 2 if np.min(rise) < np.min(fall) else 0
 
-        if self._lower_threshold is not None and self._upper_threshold is not None:
-            ret = pd.cut(ret, [-math.inf, self._lower_threshold, self._upper_threshold, math.inf], labels=[0, 1, 2])    
-            ret = to_categorical(ret)
+        # trunc_ret = lambda x: x[self._lag_cutoff:][self._history_used:-self._forecast_horizon]
+
+        # ret = trunc_ret((df[[self._y_variable]].shift(-self._forecast_horizon) / df[[self._y_variable]] - 1.).values.flatten())
+
+        # if self._lower_threshold is not None and self._upper_threshold is not None:
+        #     ret = pd.cut(ret, [-math.inf, self._lower_threshold, self._upper_threshold, math.inf], labels=[0, 1, 2])    
+        #     ret = to_categorical(ret)
+
+        if self._lower_threshold is None or self._upper_threshold is None:
+            # Simple forward return
+            trunc_ret = lambda x: x[self._lag_cutoff:][self._history_used:-self._forecast_horizon]
+            ret = trunc_ret((df[[self._y_variable]].shift(-self._forecast_horizon) / df[[self._y_variable]] - 1.).values.flatten())
+        
+        else:     
+            y_var = df[self._y_variable].to_numpy()
+            shifts = np.array([y_var[i:len(y_var)-self._forecast_horizon+i] \
+                for i in range(self._forecast_horizon+1)])
+            shifts_ret = shifts / shifts[0] - 1
+
+            fall_index = [np.where(col <= self._lower_threshold) for col in shifts_ret.T]
+            rise_index = [np.where(col >= self._upper_threshold) for col in shifts_ret.T]
+
+            ret = [event_type(x) for x in zip(rise_index, fall_index)]
+            ret = ret[self._lag_cutoff:][self._history_used:]
+            # ret = to_categorical(ret)
 
         return ret
 
