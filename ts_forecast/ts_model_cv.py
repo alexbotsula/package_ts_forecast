@@ -15,7 +15,7 @@ def _signal_last(it):
 
 # Time series walk-forward cross-validation of a model
 
-def time_series_cv(df, data_transformer, n_fold, n_epochs, batch_size, model_func):
+def time_series_cv(df, data_transformer, n_fold, n_epochs, batch_size, model_func, callbacks_list=[]):
     '''
     Args:
         df (DataFrame):         data frame with the source data (must have time as index!)
@@ -45,6 +45,7 @@ def time_series_cv(df, data_transformer, n_fold, n_epochs, batch_size, model_fun
 
         m = model_func(X_train)
         hist = m.fit(X_train, y_train,
+                    callbacks=callbacks_list,
                     validation_data=(X_val, y_val), shuffle=True,
                     batch_size=batch_size, epochs=n_epochs, verbose=False)
         
