@@ -64,7 +64,7 @@ def time_series_cv(df, data_transformer, n_fold, n_epochs, batch_size, model_fun
 
         perf_hist = dict((key, list_append(perf_hist[key], hist.history[key])) for key in hist.history)
 
-    return perf_hist
+    return perf_hist, m
 
 
 
