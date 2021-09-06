@@ -10,7 +10,7 @@ def plot_pred(gpr, X):
 
     data_df = pd.DataFrame(
         {
-            't':        X.reshape(sample_size).tolist()[0],
+            't':        X.reshape(-1).tolist()[0],
             'y':        y,
             'y_pred':   y_pred,
             'y_std':    y_std,
