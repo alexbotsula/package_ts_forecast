@@ -43,3 +43,4 @@ def plot_sample(gp, n, X, y):
     for i in range(gp_sample.shape[1]):
         plt.plot(X, gp_sample[:,i], color='orange')
     plt.plot(X, y, 'o', color='grey')
+    plt.show()
