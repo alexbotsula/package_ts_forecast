@@ -5,7 +5,7 @@ import pandas as pd
 
 
 # Function to plot predictions by GPR model
-def plot_pred(gpr, X):
+def plot_pred(gpr, X, y):
     y_pred, y_std = gpr.predict(X, return_std=True)
 
     data_df = pd.DataFrame(
