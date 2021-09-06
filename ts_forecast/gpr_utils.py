@@ -23,7 +23,7 @@ def plot_pred(gpr, X):
     fig, ax = plt.subplots()
 
     ax.fill_between(
-        x=X.reshape(sample_size).tolist()[0], 
+        x=X.reshape(-1).tolist()[0], 
         y1=data_df['y_pred_lwr'], 
         y2=data_df['y_pred_upr'], 
         color='grey', 
